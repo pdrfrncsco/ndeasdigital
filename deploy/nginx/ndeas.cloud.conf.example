@@ -1,0 +1,44 @@
+# Nginx config for frontend (ndeas.cloud) proxied to Next.js running on port 3000
+# Place in /etc/nginx/sites-available/ndeas.cloud and symlink to sites-enabled
+
+upstream nextjs_frontend {
+    server 127.0.0.1:3000;
+}
+
+server {
+    listen 80;
+    server_name ndeas.cloud www.ndeas.cloud;
+
+    # Redirect to https once certs installed
+    # return 301 https://$host$request_uri;
+
+    location /_next/ {
+        # let Next.js serve its static assets
+        proxy_pass http://nextjs_frontend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location / {
+        proxy_pass http://nextjs_frontend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    client_max_body_size 20M;
+}
+
+# Example HTTPS block (used by certbot)
+# server {
+#   listen 443 ssl;
+#   server_name ndeas.cloud www.ndeas.cloud;
+#   ssl_certificate /etc/letsencrypt/live/ndeas.cloud/fullchain.pem;
+#   ssl_certificate_key /etc/letsencrypt/live/ndeas.cloud/privkey.pem;
+#   include /etc/letsencrypt/options-ssl-nginx.conf;
+#   ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+#   location / { proxy_pass http://nextjs_frontend; }
+# }

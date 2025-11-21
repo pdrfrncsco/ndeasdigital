@@ -1,0 +1,61 @@
+/* Combined styles extracted from original index.html <style> and style.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+body {
+  font-family: 'Poppins', sans-serif;
+  scroll-behavior: smooth;
+  background-color: #f8fafc; /* bg-gray-50 */
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.hero-pattern {
+  background-image: radial-gradient(rgba(255,255,255,0.1) 2px, transparent 2px);
+  background-size: 40px 40px;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.project-card { transition: all 0.3s ease; }
+.project-card:hover { transform: scale(1.03); }
+
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #f97316;
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after { width: 100%; }
+
+.checkbox-custom { appearance: none; -webkit-appearance: none; width: 20px; height: 20px; border: 2px solid #f97316; border-radius: 4px; outline: none; cursor: pointer; position: relative; }
+.checkbox-custom:checked { background-color: #f97316; }
+.checkbox-custom:checked::after { content: '\2713'; position: absolute; color: white; font-size: 14px; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+.radio-custom { appearance: none; -webkit-appearance: none; width: 20px; height: 20px; border: 2px solid #f97316; border-radius: 50%; outline: none; cursor: pointer; position: relative; }
+.radio-custom:checked { background-color: #f97316; }
+.radio-custom:checked::after { content: ''; position: absolute; width: 8px; height: 8px; background-color: white; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+.input-field { transition: all 0.3s ease; border: 1px solid #e5e7eb; }
+.input-field:focus { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2); }
+
+.price-badge { animation: pulse 2s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+#invoice-preview { background-color: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
+
+/* small extra styles from original style.css */
+body { padding: 2rem; }
+h1 { font-size: 16px; margin-top: 0; }
+p { color: rgb(107, 114, 128); font-size: 15px; margin-bottom: 10px; margin-top: 5px; }
+.card { max-width: 620px; margin: 0 auto; padding: 16px; border: 1px solid lightgray; border-radius: 16px; }
+.card p:last-child { margin-bottom: 0; }

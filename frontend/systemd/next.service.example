@@ -1,0 +1,17 @@
+[Unit]
+Description=Next.js app for ndeas.cloud
+After=network.target
+
+[Service]
+User=deploy
+Group=deploy
+WorkingDirectory=/var/www/ndeascloud/frontend
+EnvironmentFile=/var/www/ndeascloud/frontend/.env
+# Use npm to start the production Next.js server (ensure NODE env is set and dependencies installed)
+ExecStart=/usr/bin/npm run start --prefix /var/www/ndeascloud/frontend
+Restart=on-failure
+RestartSec=5s
+# Optional: set environment variables like NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
