@@ -22,12 +22,12 @@ Quick deploy steps (commands to run on server)
 
 # 1. Create user and directories
 sudo adduser --system --group --no-create-home --shell /usr/sbin/nologin deploy
-sudo mkdir -p /var/www/ndeascloud
+cd ..
 sudo chown $USER:$USER /var/www/ndeascloud
 
 # 2. Clone repo and install backend deps
 cd /var/www/ndeascloud
-git clone <your-repo-url> .
+git clone <your-repo-url> . (git clone git@github.com:pdrfrncsco/ndeasdigital.git)
 python3 -m venv venv
 source venv/bin/activate
 pip install -U pip
@@ -53,7 +53,7 @@ sudo systemctl enable --now gunicorn.socket
 sudo systemctl status gunicorn.socket
 
 # 6. Install and build frontend
-cd /var/www/ndeasvloud/frontend
+cd /var/www/ndeascloud/frontend
 npm install
 npm run build
 # Start Next.js via systemd unit (example provided)

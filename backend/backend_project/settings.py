@@ -70,7 +70,16 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+# Directory where `collectstatic` will gather static files for production.
+# Set to a writable path inside the project; the deploy README expects a collectstatic
+# step and the webserver (nginx) should serve files from this directory.
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Additional locations the staticfiles app will search (optional)
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 # CORS -- allow everything in dev
 CORS_ALLOW_ALL_ORIGINS = True
