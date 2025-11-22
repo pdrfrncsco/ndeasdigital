@@ -1,0 +1,15 @@
+[Unit]
+Description=Backend Django app
+After=network.target
+
+[Service]
+User=deploy
+Group=deploy
+WorkingDirectory=/var/www/ndeascloud/ndeasdigital/backend
+EnvironmentFile=/var/www/ndeascloud/ndeasdigital/backend/.env
+ExecStart=/usr/bin/gunicorn backend_project.wsgi:application --bind 0.0.0.0:8000 --workers 3
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

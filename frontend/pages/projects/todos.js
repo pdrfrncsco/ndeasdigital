@@ -26,6 +26,12 @@ function ProjectCard({ img, title, category, description, tags }) {
 }
 
 export default function TodosProjetos() {
+  const makeApiUrl = (p) => {
+    const base = process.env.NEXT_PUBLIC_API_BASE
+    const b = (base && base.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
+    const sep = b ? (/(\/api)$/.test(b) ? '' : '/api') : ''
+    return `${b}${sep}${p}`
+  }
   const fallbackProjects = [
     {
       img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
@@ -60,9 +66,7 @@ export default function TodosProjetos() {
   const [selectedTags, setSelectedTags] = useState([])
 
   useEffect(() => {
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE
-    const apiBase = (rawBase && rawBase.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
-    const url = `${apiBase ? apiBase : ''}/api/projects/`
+    const url = makeApiUrl('/projects/')
     fetch(url)
       .then((r) => {
         if (!r.ok) throw new Error('fetch error')
