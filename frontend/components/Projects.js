@@ -71,6 +71,19 @@ export default function Projects() {
       .finally(() => setLoading(false))
   }, [])
 
+  if (loading) {
+    return (
+      <section id="projects" className="py-16 bg-white">
+        <div className="container mx-auto px-4 text-center py-12">
+          <div className="inline-flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-orange-300 border-t-orange-600 rounded-full animate-spin"></div>
+          </div>
+          <div className="mt-4 text-gray-600">Carregando projetos...</div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section id="projects" className="py-16 bg-white">
       <div className="container mx-auto px-4">
@@ -81,7 +94,7 @@ export default function Projects() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {(loading ? fallbackProjects : projects).map((p) => {
+          {(projects.length ? projects : fallbackProjects).map((p) => {
             const slug = p.slug
             const key = p.slug || p.title
             const card = <ProjectCard {...p} />

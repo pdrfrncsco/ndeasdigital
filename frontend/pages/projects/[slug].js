@@ -25,8 +25,25 @@ export default function ProjectDetail() {
       .finally(() => setLoading(false))
   }, [slug])
 
-  if (loading) return <div className="p-8">Carregando...</div>
-  if (!project) return <div className="p-8">Projecto não encontrado.</div>
+  if (loading)
+    return (
+      <div className="p-8 text-center">
+        <div className="inline-flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-orange-300 border-t-orange-600 rounded-full animate-spin"></div>
+        </div>
+        <div className="mt-4 text-gray-600">Carregando projecto...</div>
+      </div>
+    )
+
+  if (!project)
+    return (
+      <div className="p-8 text-center">
+        <div className="text-xl font-semibold mb-3">Projecto não encontrado.</div>
+        <div>
+          <Link href="/" className="text-orange-500">Voltar à página inicial</Link>
+        </div>
+      </div>
+    )
 
   return (
     <div className="container mx-auto p-6">
