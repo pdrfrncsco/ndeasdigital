@@ -60,9 +60,10 @@ export default function TodosProjetos() {
   const [selectedTags, setSelectedTags] = useState([])
 
   useEffect(() => {
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000'
-    const apiBase = rawBase.replace(/\/$/, '')
-    fetch(`${apiBase}/api/projects/`)
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE
+    const apiBase = (rawBase && rawBase.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
+    const url = `${apiBase ? apiBase : ''}/api/projects/`
+    fetch(url)
       .then((r) => {
         if (!r.ok) throw new Error('fetch error')
         return r.json()
