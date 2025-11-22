@@ -7,8 +7,7 @@ export default function Header() {
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center">
-          <div className="w-12 h-12 rounded-full gradient-bg flex items-center justify-center text-white font-bold text-xl mr-3">NS</div>
-          <h1 className="text-xl font-bold text-gray-800">NDEAS <span className="text-orange-500">DIGITAL</span></h1>
+          <img src="/ndeiasdigital_logo.png" alt="NDEAS DIGITAL" className="w-30 h-12 object-contain mr-3" />
         </div>
 
         <nav className="hidden md:flex space-x-8">
