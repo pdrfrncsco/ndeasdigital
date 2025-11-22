@@ -35,7 +35,7 @@ pip install -r backend/requirements.txt
 
 # 3. Configure env files
 # Copy provided example to /var/www/ndeascloud/backend/.env and edit values
-sudo cp backend/systemd/ndeascloud.env.example /var/www/ndeascloud/backend/.env
+sudo cp backend/systemd/ndeascloud.env.example /var/www/ndeascloud/ndeasdigital/backend/.env
 # Edit .env, set DJANGO_SECRET, SMTP credentials, ALLOWED_HOSTS, etc.
 
 # 4. Migrate, collectstatic
@@ -46,14 +46,14 @@ python manage.py collectstatic --noinput
 
 # 5. Configure Gunicorn systemd (examples provided)
 # Copy example units to /etc/systemd/system/ and customize paths
-sudo cp backend/systemd/gunicorn.socket.example /etc/systemd/system/gunicorn.socket
-sudo cp backend/systemd/gunicorn.service.example /etc/systemd/system/gunicorn.service
+sudo cp backend/systemd/gunicorn.socket.example /etc/systemd/system/ndeascloud.socket
+sudo cp backend/systemd/gunicorn.service.example nano /etc/systemd/system/ndeascloud.service
 sudo systemctl daemon-reload
-sudo systemctl enable --now gunicorn.socket
-sudo systemctl status gunicorn.socket
+sudo systemctl enable --now ndeascloud.socket
+sudo systemctl status ndeascloud.socket
 
 # 6. Install and build frontend
-cd /var/www/ndeascloud/frontend
+cd /var/www/ndeascloud/ndeasdigital/frontend
 npm install
 npm run build
 # Start Next.js via systemd unit (example provided)
@@ -73,7 +73,7 @@ sudo systemctl reload nginx
 # 8. Obtain TLS certificates with certbot (nginx plugin)
 sudo apt install certbot python3-certbot-nginx
 sudo certbot --nginx -d ndeas.cloud -d www.ndeas.cloud
-sudo certbot --nginx -d api-ndeas.ndeas.cloud
+sudo certbot --nginx -d api-ndeas.ndeas.cloud -d www.api-ndeasndeas.cloud
 
 # 9. Firewall (ufw) example
 sudo ufw allow OpenSSH

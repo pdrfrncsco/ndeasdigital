@@ -103,7 +103,7 @@ export default function Contact() {
                 <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 mr-4 mt-1"><i className="fas fa-map-marker-alt"></i></div>
                 <div>
                   <h4 className="font-medium text-gray-800">Endereço</h4>
-                  <p className="text-gray-600">Av. 21 de Janeiro, Edifício Exemplo, 3º Andar, Luanda, Angola</p>
+                  <p className="text-gray-600">Municipio do Sequele, Icolo e Bengo, Angola</p>
                 </div>
               </div>
 
@@ -111,8 +111,8 @@ export default function Contact() {
                 <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 mr-4 mt-1"><i className="fas fa-phone-alt"></i></div>
                 <div>
                   <h4 className="font-medium text-gray-800">Telefone</h4>
-                  <p className="text-gray-600">+244 923 456 789</p>
-                  <p className="text-gray-600">+244 945 678 901</p>
+                  <p className="text-gray-600">+244 955 583 204</p>
+                  <p className="text-gray-600">+244 945 149 978</p>
                 </div>
               </div>
 
@@ -120,8 +120,8 @@ export default function Contact() {
                 <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 mr-4 mt-1"><i className="fas fa-envelope"></i></div>
                 <div>
                   <h4 className="font-medium text-gray-800">E-mail</h4>
-                  <p className="text-gray-600">geral@ndeias.ao</p>
-                  <p className="text-gray-600">suporte@ndeias.ao</p>
+                  <p className="text-gray-600">geral@ndeas.cloud</p>
+                  <p className="text-gray-600">suporte@ndeas.cloud</p>
                 </div>
               </div>
 

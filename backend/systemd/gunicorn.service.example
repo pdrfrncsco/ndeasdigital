@@ -5,10 +5,10 @@ After=network.target
 [Service]
 User=deploy
 Group=deploy
-WorkingDirectory=/var/www/ndeascloud/backend
-EnvironmentFile=/var/www/ndeascloud/backend/.env
+WorkingDirectory=/var/www/ndeascloud/ndeasdigital/backend
+EnvironmentFile=/var/www/ndeascloud/ndeasdigital/backend/.env
 # Activate virtualenv path
-ExecStart=/var/www/ndeascloud/venv/bin/gunicorn \
+ExecStart=/var/www/ndeascloud/ndeasdigital/venv/bin/gunicorn \
     --access-logfile - \
     --workers 3 \
     --bind unix:/run/gunicorn/ndeascloud.sock \

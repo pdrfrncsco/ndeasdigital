@@ -1,9 +1,9 @@
 # Nginx config for backend API (api-ndeas.ndeas.cloud)
-# Place in /etc/nginx/sites-available/api-ndeas.ndeas.cloud and symlink to sites-enabled
+# Place in nano /etc/nginx/sites-available/api-ndeas.ndeas.cloud and symlink to sites-enabled
 
 server {
     listen 80;
-    server_name api-ndeas.ndeas.cloud;
+    server_name api-ndeas.ndeas.cloud www.api-ndeas.ndeas.cloud;
 
     # Redirect http to https (enable when cert installed)
     # return 301 https://$host$request_uri;

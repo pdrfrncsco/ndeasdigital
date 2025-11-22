@@ -7,8 +7,61 @@ body {
   background-color: #f8fafc; /* bg-gray-50 */
 }
 
+/* Theme variables */
+:root {
+  --brand-orange: #f97316;
+  --brand-orange-dark: #ea580c;
+  --hero-overlay: rgba(255, 255, 255, 0.959);
+}
+
 .gradient-bg {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  /* Solid brand background for icon badges and hero backgrounds */
+  background: var(--brand-orange);
+  color: white;
+}
+
+/* Ensure icons placed on .gradient-bg are white (no gradient on icons) */
+.gradient-bg i,
+.gradient-bg .fa,
+.gradient-bg .fas,
+.gradient-bg svg,
+.gradient-bg .icon {
+  color: white !important;
+}
+
+/* Ensure the gradient parent establishes a stacking context so the pseudo overlay doesn't hide content */
+.gradient-bg {
+  position: relative;
+}
+.gradient-bg > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero image as a background block with blend for a modern look */
+.hero-image {
+  width: 100%;
+  min-height: 280px;
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(15,23,42,0.08); /* fallback color while image loads */
+}
+
+@media (min-width: 768px) {
+  .hero-image { min-height: 360px; }
+}
+
+/* Overlay inside hero-image to provide a subtle darken/blend over the image */
+.hero-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15,23,42,0.22), rgba(15,23,42,0.12));
+  pointer-events: none;
+  z-index: 1;
+  border-radius: 0.75rem;
 }
 
 .hero-pattern {
@@ -59,3 +112,33 @@ h1 { font-size: 16px; margin-top: 0; }
 p { color: rgb(107, 114, 128); font-size: 15px; margin-bottom: 10px; margin-top: 5px; }
 .card { max-width: 620px; margin: 0 auto; padding: 16px; border: 1px solid lightgray; border-radius: 16px; }
 .card p:last-child { margin-bottom: 0; }
+
+/* Icons: keep all icons in the site using FontAwesome / svg icons in brand orange */
+.fa, .fas, .far, .fab, i[class*="fa-"], svg.icon, .icon {
+  color: var(--brand-orange) !important;
+}
+
+/* Button helpers */
+.btn-primary {
+  background: var(--brand-orange);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  display: inline-block;
+}
+.btn-primary:hover { background: var(--brand-orange-dark); }
+
+.btn-outline {
+  background: transparent;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border: 2px solid white;
+}
+.btn-outline:hover { background: white; color: var(--brand-orange); }
+
+/* Hero title tweaks */
+.hero-title { font-size: 2.25rem; line-height: 1.05; }
+.hero-subtitle { font-size: 1.125rem; color: rgba(255,255,255,0.92); }
