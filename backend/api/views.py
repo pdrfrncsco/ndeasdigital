@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import BudgetSerializer, ContactSerializer, InvoiceSerializer
+from .models import ContactMessage, InvoiceRecord
 from django.conf import settings
 from django.core.mail import EmailMessage
 import os
@@ -79,8 +80,20 @@ def contact_view(request):
     serializer = ContactSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    data = serializer.validated_data
+    # persist contact message for admin review
+    try:
+        ContactMessage.objects.create(
+            name=data.get('name'),
+            email=data.get('email'),
+            phone=data.get('phone', ''),
+            subject=data.get('subject'),
+            message=data.get('message')
+        )
+    except Exception:
+        # Do not fail the API if DB insert fails; just log
+        logging.getLogger(__name__).exception('Failed to save contact message')
 
-    # In a real app you'd persist or send email. Here we just echo.
     return Response({'status': 'ok', 'message': 'Contato recebido'}, status=status.HTTP_201_CREATED)
 
 
@@ -298,6 +311,34 @@ def invoice_view(request):
                     logger.info('Removed temporary invoice file %s after successful send', attachment_info)
                 except Exception:
                     logger.exception('Failed removing temporary invoice file %s', attachment_info)
+
+    # Persist invoice record for admin review
+    try:
+        # compute simple total if provided in items
+        total_val = None
+        try:
+            if isinstance(request.data.get('items'), (list, tuple)):
+                s = 0
+                for it in request.data.get('items'):
+                    # expect item to have 'price' and optional 'quantity'
+                    price = float(it.get('price') or 0)
+                    qty = float(it.get('quantity') or 1)
+                    s += price * qty
+                total_val = round(s, 2)
+        except Exception:
+            total_val = None
+
+        InvoiceRecord.objects.create(
+            invoice_id=invoice_id,
+            client=request.data.get('client') or {},
+            items=request.data.get('items') or [],
+            total=total_val,
+            email_sent=sent,
+            attachment_path=attachment_info or '',
+            telemetry_path=failfile if (not sent and 'failfile' in locals()) else None
+        )
+    except Exception:
+        logging.getLogger(__name__).exception('Failed to persist InvoiceRecord %s', invoice_id)
 
     resp = {'status': 'created', 'invoice_id': invoice_id, 'email_sent': sent}
     if attachment_info:
