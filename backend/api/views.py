@@ -1,9 +1,11 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import BudgetSerializer, ContactSerializer, InvoiceSerializer
+from .serializers import BudgetSerializer, ContactSerializer, InvoiceSerializer, ProjectSerializer
+from .models import ContactMessage, InvoiceRecord, Project
 from django.conf import settings
 from django.core.mail import EmailMessage
+from django.db import models
 import os
 import base64
 import json
@@ -79,8 +81,20 @@ def contact_view(request):
     serializer = ContactSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    data = serializer.validated_data
+    # persist contact message for admin review
+    try:
+        ContactMessage.objects.create(
+            name=data.get('name'),
+            email=data.get('email'),
+            phone=data.get('phone', ''),
+            subject=data.get('subject'),
+            message=data.get('message')
+        )
+    except Exception:
+        # Do not fail the API if DB insert fails; just log
+        logging.getLogger(__name__).exception('Failed to save contact message')
 
-    # In a real app you'd persist or send email. Here we just echo.
     return Response({'status': 'ok', 'message': 'Contato recebido'}, status=status.HTTP_201_CREATED)
 
 
@@ -299,6 +313,34 @@ def invoice_view(request):
                 except Exception:
                     logger.exception('Failed removing temporary invoice file %s', attachment_info)
 
+    # Persist invoice record for admin review
+    try:
+        # compute simple total if provided in items
+        total_val = None
+        try:
+            if isinstance(request.data.get('items'), (list, tuple)):
+                s = 0
+                for it in request.data.get('items'):
+                    # expect item to have 'price' and optional 'quantity'
+                    price = float(it.get('price') or 0)
+                    qty = float(it.get('quantity') or 1)
+                    s += price * qty
+                total_val = round(s, 2)
+        except Exception:
+            total_val = None
+
+        InvoiceRecord.objects.create(
+            invoice_id=invoice_id,
+            client=request.data.get('client') or {},
+            items=request.data.get('items') or [],
+            total=total_val,
+            email_sent=sent,
+            attachment_path=attachment_info or '',
+            telemetry_path=failfile if (not sent and 'failfile' in locals()) else None
+        )
+    except Exception:
+        logging.getLogger(__name__).exception('Failed to persist InvoiceRecord %s', invoice_id)
+
     resp = {'status': 'created', 'invoice_id': invoice_id, 'email_sent': sent}
     if attachment_info:
         resp['attachment_path'] = attachment_info
@@ -323,6 +365,124 @@ def invoice_list_view(request):
                 'download_url': request.build_absolute_uri(reverse('invoice-download', args=[fname]))
             })
     return Response({'files': files})
+
+
+@api_view(['GET'])
+def projects_list_view(request):
+    # Filtering + searching + pagination
+    qs = Project.objects.all()
+    q = request.GET.get('q')
+    category = request.GET.get('category')
+    tag = request.GET.get('tag')
+    if category:
+        qs = qs.filter(category__iexact=category)
+    if tag:
+        qs = qs.filter(tags__icontains=tag)
+    if q:
+        qs = qs.filter(models.Q(title__icontains=q) | models.Q(description__icontains=q) | models.Q(client_name__icontains=q))
+
+    qs = qs.order_by('-featured', '-created_at')
+
+    # pagination
+    try:
+        page = int(request.GET.get('page', '1'))
+        page_size = int(request.GET.get('page_size', '10'))
+    except Exception:
+        page = 1
+        page_size = 10
+
+    from django.core.paginator import Paginator, EmptyPage
+    paginator = Paginator(qs, page_size)
+    try:
+        page_obj = paginator.page(page)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+    projects = []
+    for p in page_obj.object_list:
+        # determine main image (prefer uploaded image)
+        img_url = ''
+        if p.images.exists() and p.images.first().image:
+            img_url = p.images.first().image.url
+        elif p.img:
+            img_url = p.img
+
+        # make absolute if necessary
+        if img_url and img_url.startswith('/'):
+            img_url = request.build_absolute_uri(img_url)
+
+        # gallery: prefer uploaded images, else stored gallery urls
+        gallery_urls = []
+        if p.images.exists():
+            for i in p.images.all():
+                if getattr(i, 'image', None):
+                    url = i.image.url
+                    if url and url.startswith('/'):
+                        url = request.build_absolute_uri(url)
+                    gallery_urls.append(url)
+        else:
+            for g in (p.gallery or []):
+                if g and isinstance(g, str) and g.startswith('/'):
+                    gallery_urls.append(request.build_absolute_uri(g))
+                else:
+                    gallery_urls.append(g)
+
+        projects.append({
+            'id': p.id,
+            'slug': p.slug,
+            'title': p.title,
+            'category': p.category,
+            'description': p.description,
+            'tags': p.tags or [],
+            'img': img_url or '',
+            'gallery': gallery_urls,
+            'client_name': p.client_name or '',
+            'link': p.link or '',
+            'featured': p.featured,
+        })
+
+    return Response({
+        'projects': projects,
+        'pagination': {
+            'page': page,
+            'page_size': page_size,
+            'total_pages': paginator.num_pages,
+            'total_items': paginator.count,
+        }
+    })
+
+
+@api_view(['GET'])
+def project_detail_view(request, slug):
+    try:
+        p = Project.objects.get(slug=slug)
+    except Project.DoesNotExist:
+        return Response({'detail': 'Not found'}, status=404)
+
+    data = {
+        'id': p.id,
+        'slug': p.slug,
+        'title': p.title,
+        'category': p.category,
+        'description': p.description,
+        'tags': p.tags or [],
+        'img': '',
+        'gallery': [],
+        'client_name': p.client_name or '',
+        'link': p.link or '',
+        'featured': p.featured,
+        'created_at': p.created_at,
+    }
+    # populate img and gallery with absolute URLs if needed
+    if p.images.exists() and p.images.first().image:
+        img_url = p.images.first().image.url
+        data['img'] = request.build_absolute_uri(img_url) if img_url.startswith('/') else img_url
+        data['gallery'] = [request.build_absolute_uri(i.image.url) if i.image.url.startswith('/') else i.image.url for i in p.images.all()]
+    else:
+        if p.img:
+            data['img'] = request.build_absolute_uri(p.img) if p.img.startswith('/') else p.img
+        data['gallery'] = [request.build_absolute_uri(g) if isinstance(g, str) and g.startswith('/') else g for g in (p.gallery or [])]
+    return Response({'project': data})
 
 
 def invoice_download_view(request, filename):

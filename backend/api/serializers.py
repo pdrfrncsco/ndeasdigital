@@ -24,3 +24,17 @@ class ContactSerializer(serializers.Serializer):
 class InvoiceSerializer(serializers.Serializer):
     client = serializers.DictField(child=serializers.CharField())
     items = serializers.ListField(child=serializers.DictField())
+
+
+class ProjectSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    slug = serializers.CharField(read_only=True)
+    title = serializers.CharField()
+    category = serializers.CharField(allow_blank=True)
+    description = serializers.CharField()
+    tags = serializers.ListField(child=serializers.CharField(), required=False)
+    img = serializers.CharField(allow_blank=True)
+    link = serializers.CharField(allow_blank=True)
+    gallery = serializers.ListField(child=serializers.CharField(), required=False)
+    client_name = serializers.CharField(allow_blank=True)
+    featured = serializers.BooleanField(required=False)
