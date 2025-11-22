@@ -30,21 +30,24 @@ export default function Projects() {
       title: 'Loja Virtual ModaAngola',
       category: 'eCommerce',
       description: 'Plataforma de eCommerce completa para venda de moda angolana com integração Multicaixa Express.',
-      tags: ['React', 'Node.js', 'MongoDB']
+      tags: ['React', 'Node.js', 'MongoDB'],
+      featured: true
     },
     {
       img: 'https://images.unsplash.com/photo-1581092921461-39b2f2c8a352?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
       title: 'Sistema Clínica Vida+',
       category: 'Saúde',
       description: 'Sistema de gestão para clínica médica com agendamento online, prontuário eletrônico e telemedicina.',
-      tags: ['Django', 'PostgreSQL', 'React']
+      tags: ['Django', 'PostgreSQL', 'React'],
+      featured: true
     },
     {
       img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
       title: 'Plataforma Educativa Eureka',
       category: 'Educação',
       description: 'Sistema de gestão escolar com portal para pais, alunos e professores com aulas online.',
-      tags: ['Laravel', 'MySQL', 'Vue.js']
+      tags: ['Laravel', 'MySQL', 'Vue.js'],
+      featured: true
     }
   ]
   const [projects, setProjects] = useState([])
@@ -78,7 +81,7 @@ export default function Projects() {
           <div className="inline-flex items-center justify-center">
             <div className="w-12 h-12 border-4 border-orange-300 border-t-orange-600 rounded-full animate-spin"></div>
           </div>
-          <div className="mt-4 text-gray-600">Carregando projetos...</div>
+          <div className="mt-4 text-gray-600">Carregando projectos...</div>
         </div>
       </section>
     )
@@ -88,13 +91,17 @@ export default function Projects() {
     <section id="projects" className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">Nossos Projetos</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-4">Nossos Projectos</h2>
           <div className="w-24 h-1 bg-orange-500 mx-auto"></div>
-          <p className="text-gray-600 max-w-2xl mx-auto mt-4">Alguns dos projetos que desenvolvemos para clientes em diversos setores em Angola.</p>
+          <p className="text-gray-600 max-w-2xl mx-auto mt-4">Alguns dos projectos que desenvolvemos para clientes em diversos setores em Angola.</p>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {(projects.length ? projects : fallbackProjects).map((p) => {
+          {(() => {
+            const all = projects.length ? projects : fallbackProjects
+            const featured = all.filter((p) => p.featured).slice(0, 3)
+            const list = featured.length ? featured : all.slice(0, 3)
+            return list.map((p) => {
             const slug = p.slug
             const key = p.slug || p.title
             const card = <ProjectCard {...p} />
@@ -110,13 +117,14 @@ export default function Projects() {
                 {card}
               </div>
             )
-          })}
+            })
+          })()}
         </div>
 
         <div className="text-center mt-12">
-          <button className="border-2 border-orange-500 text-orange-500 font-semibold px-6 py-3 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300">
-            Ver Mais Projetos
-          </button>
+          <Link href="/projects/todos" className="inline-block border-2 border-orange-500 text-orange-500 font-semibold px-6 py-3 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300">
+            Ver Mais Projectos
+          </Link>
         </div>
       </div>
     </section>
