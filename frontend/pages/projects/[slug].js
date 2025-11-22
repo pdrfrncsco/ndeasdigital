@@ -11,7 +11,8 @@ export default function ProjectDetail() {
 
   useEffect(() => {
     if (!slug) return
-    const apiBase = process.env.NEXT_PUBLIC_API_BASE || ''
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000'
+    const apiBase = rawBase.replace(/\/$/, '')
     fetch(`${apiBase}/api/projects/${slug}/`)
       .then((r) => {
         if (!r.ok) throw new Error('not found')
@@ -25,14 +26,12 @@ export default function ProjectDetail() {
   }, [slug])
 
   if (loading) return <div className="p-8">Carregando...</div>
-  if (!project) return <div className="p-8">Projeto não encontrado.</div>
+  if (!project) return <div className="p-8">Projecto não encontrado.</div>
 
   return (
     <div className="container mx-auto p-6">
       <div className="mb-6">
-        <Link href="/">
-          <a className="text-sm text-orange-500">&larr; Voltar</a>
-        </Link>
+        <Link href="/" className="text-sm text-orange-500">&larr; Voltar</Link>
       </div>
 
       <h1 className="text-3xl font-bold mb-2">{project.title}</h1>
