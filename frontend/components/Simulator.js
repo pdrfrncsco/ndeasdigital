@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
 
-const envBase = process.env.NEXT_PUBLIC_API_BASE
-const API_BASE = (envBase && envBase.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
+const makeApiUrl = (p) => {
+  const base = process.env.NEXT_PUBLIC_API_BASE
+  const b = (base && base.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
+  const sep = b ? (/(\/api)$/.test(b) ? '' : '/api') : ''
+  return `${b}${sep}${p}`
+}
 
 export default function Simulator() {
   const [loading, setLoading] = useState(false)
@@ -39,7 +43,7 @@ export default function Simulator() {
 
       const payload = { name, email, phone, system_type, platforms, features, domain, hosting, support }
 
-      const res = await fetch(`${API_BASE ? API_BASE : ''}/api/budget/`, {
+      const res = await fetch(makeApiUrl('/budget/'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -73,7 +77,7 @@ export default function Simulator() {
         ]
       }
 
-      const res = await fetch(`${API_BASE ? API_BASE : ''}/api/invoice/`, {
+      const res = await fetch(makeApiUrl('/invoice/'), {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
       })
       if (!res.ok) throw new Error('Erro ao gerar fatura')

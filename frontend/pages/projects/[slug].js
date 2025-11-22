@@ -11,11 +11,16 @@ export default function ProjectDetail() {
   const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const makeApiUrl = (p) => {
+    const base = process.env.NEXT_PUBLIC_API_BASE
+    const b = (base && base.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
+    const sep = b ? (/(\/api)$/.test(b) ? '' : '/api') : ''
+    return `${b}${sep}${p}`
+  }
+
   useEffect(() => {
     if (!slug) return
-    const rawBase = process.env.NEXT_PUBLIC_API_BASE
-    const apiBase = (rawBase && rawBase.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
-    const url = `${apiBase ? apiBase : ''}/api/projects/${slug}/`
+    const url = makeApiUrl(`/projects/${slug}/`)
     fetch(url)
       .then((r) => {
         if (!r.ok) throw new Error('not found')
