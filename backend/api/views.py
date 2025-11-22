@@ -5,6 +5,7 @@ from .serializers import BudgetSerializer, ContactSerializer, InvoiceSerializer,
 from .models import ContactMessage, InvoiceRecord, Project
 from django.conf import settings
 from django.core.mail import EmailMessage
+from django.db import models
 import os
 import base64
 import json
@@ -368,9 +369,64 @@ def invoice_list_view(request):
 
 @api_view(['GET'])
 def projects_list_view(request):
-    qs = Project.objects.all().order_by('-featured', '-created_at')
+    # Filtering + searching + pagination
+    qs = Project.objects.all()
+    q = request.GET.get('q')
+    category = request.GET.get('category')
+    tag = request.GET.get('tag')
+    if category:
+        qs = qs.filter(category__iexact=category)
+    if tag:
+        qs = qs.filter(tags__icontains=tag)
+    if q:
+        qs = qs.filter(models.Q(title__icontains=q) | models.Q(description__icontains=q) | models.Q(client_name__icontains=q))
+
+    qs = qs.order_by('-featured', '-created_at')
+
+    # pagination
+    try:
+        page = int(request.GET.get('page', '1'))
+        page_size = int(request.GET.get('page_size', '10'))
+    except Exception:
+        page = 1
+        page_size = 10
+
+    from django.core.paginator import Paginator, EmptyPage
+    paginator = Paginator(qs, page_size)
+    try:
+        page_obj = paginator.page(page)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
     projects = []
-    for p in qs:
+    for p in page_obj.object_list:
+        # determine main image (prefer uploaded image)
+        img_url = ''
+        if p.images.exists() and p.images.first().image:
+            img_url = p.images.first().image.url
+        elif p.img:
+            img_url = p.img
+
+        # make absolute if necessary
+        if img_url and img_url.startswith('/'):
+            img_url = request.build_absolute_uri(img_url)
+
+        # gallery: prefer uploaded images, else stored gallery urls
+        gallery_urls = []
+        if p.images.exists():
+            for i in p.images.all():
+                if getattr(i, 'image', None):
+                    url = i.image.url
+                    if url and url.startswith('/'):
+                        url = request.build_absolute_uri(url)
+                    gallery_urls.append(url)
+        else:
+            for g in (p.gallery or []):
+                if g and isinstance(g, str) and g.startswith('/'):
+                    gallery_urls.append(request.build_absolute_uri(g))
+                else:
+                    gallery_urls.append(g)
+
         projects.append({
             'id': p.id,
             'slug': p.slug,
@@ -378,13 +434,22 @@ def projects_list_view(request):
             'category': p.category,
             'description': p.description,
             'tags': p.tags or [],
-            'img': p.img or '',
-            'gallery': p.gallery or [],
+            'img': img_url or '',
+            'gallery': gallery_urls,
             'client_name': p.client_name or '',
             'link': p.link or '',
             'featured': p.featured,
         })
-    return Response({'projects': projects})
+
+    return Response({
+        'projects': projects,
+        'pagination': {
+            'page': page,
+            'page_size': page_size,
+            'total_pages': paginator.num_pages,
+            'total_items': paginator.count,
+        }
+    })
 
 
 @api_view(['GET'])
@@ -401,13 +466,22 @@ def project_detail_view(request, slug):
         'category': p.category,
         'description': p.description,
         'tags': p.tags or [],
-        'img': p.img or '',
-        'gallery': p.gallery or [],
+        'img': '',
+        'gallery': [],
         'client_name': p.client_name or '',
         'link': p.link or '',
         'featured': p.featured,
         'created_at': p.created_at,
     }
+    # populate img and gallery with absolute URLs if needed
+    if p.images.exists() and p.images.first().image:
+        img_url = p.images.first().image.url
+        data['img'] = request.build_absolute_uri(img_url) if img_url.startswith('/') else img_url
+        data['gallery'] = [request.build_absolute_uri(i.image.url) if i.image.url.startswith('/') else i.image.url for i in p.images.all()]
+    else:
+        if p.img:
+            data['img'] = request.build_absolute_uri(p.img) if p.img.startswith('/') else p.img
+        data['gallery'] = [request.build_absolute_uri(g) if isinstance(g, str) and g.startswith('/') else g for g in (p.gallery or [])]
     return Response({'project': data})
 
 

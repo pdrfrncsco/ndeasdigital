@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import ContactMessage, InvoiceRecord
-from .models import Project
+from .models import Project, ProjectImage
+from django.utils.html import format_html
 
 
 @admin.register(ContactMessage)
@@ -31,3 +32,26 @@ class ProjectAdmin(admin.ModelAdmin):
     search_fields = ('title', 'client_name', 'category', 'tags')
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ('created_at',)
+
+    def thumbnail(self, obj):
+        first = None
+        try:
+            first = obj.images.first()
+        except Exception:
+            first = None
+        if first and getattr(first, 'image', None):
+            return format_html('<img src="{}" style="max-width:120px;max-height:80px;object-fit:cover;"/>', first.image.url)
+        if obj.img:
+            return format_html('<img src="{}" style="max-width:120px;max-height:80px;object-fit:cover;"/>', obj.img)
+        return ''
+
+    thumbnail.short_description = 'Thumbnail'
+    list_display = ('thumbnail',) + list_display
+
+
+class ProjectImageInline(admin.TabularInline):
+    model = ProjectImage
+    extra = 1
+    fields = ('image', 'caption', 'ordering')
+
+ProjectAdmin.inlines = [ProjectImageInline]

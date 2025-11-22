@@ -82,7 +82,12 @@ STATICFILES_DIRS = [
 ]
 
 # CORS -- allow everything in dev
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = DEBUG
+# In production, set CORS_ALLOWED_ORIGINS env var to a comma-separated list
+if not DEBUG:
+    cors_raw = os.environ.get('CORS_ALLOWED_ORIGINS', '')
+    if cors_raw:
+        CORS_ALLOWED_ORIGINS = [e.strip() for e in cors_raw.split(',') if e.strip()]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -136,3 +141,7 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+# Media files (user uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
