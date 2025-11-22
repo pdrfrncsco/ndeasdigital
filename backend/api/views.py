@@ -1,8 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import BudgetSerializer, ContactSerializer, InvoiceSerializer
-from .models import ContactMessage, InvoiceRecord
+from .serializers import BudgetSerializer, ContactSerializer, InvoiceSerializer, ProjectSerializer
+from .models import ContactMessage, InvoiceRecord, Project
 from django.conf import settings
 from django.core.mail import EmailMessage
 import os
@@ -364,6 +364,51 @@ def invoice_list_view(request):
                 'download_url': request.build_absolute_uri(reverse('invoice-download', args=[fname]))
             })
     return Response({'files': files})
+
+
+@api_view(['GET'])
+def projects_list_view(request):
+    qs = Project.objects.all().order_by('-featured', '-created_at')
+    projects = []
+    for p in qs:
+        projects.append({
+            'id': p.id,
+            'slug': p.slug,
+            'title': p.title,
+            'category': p.category,
+            'description': p.description,
+            'tags': p.tags or [],
+            'img': p.img or '',
+            'gallery': p.gallery or [],
+            'client_name': p.client_name or '',
+            'link': p.link or '',
+            'featured': p.featured,
+        })
+    return Response({'projects': projects})
+
+
+@api_view(['GET'])
+def project_detail_view(request, slug):
+    try:
+        p = Project.objects.get(slug=slug)
+    except Project.DoesNotExist:
+        return Response({'detail': 'Not found'}, status=404)
+
+    data = {
+        'id': p.id,
+        'slug': p.slug,
+        'title': p.title,
+        'category': p.category,
+        'description': p.description,
+        'tags': p.tags or [],
+        'img': p.img or '',
+        'gallery': p.gallery or [],
+        'client_name': p.client_name or '',
+        'link': p.link or '',
+        'featured': p.featured,
+        'created_at': p.created_at,
+    }
+    return Response({'project': data})
 
 
 def invoice_download_view(request, filename):

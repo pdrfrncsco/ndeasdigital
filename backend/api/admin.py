@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import ContactMessage, InvoiceRecord
+from .models import Project
 
 
 @admin.register(ContactMessage)
@@ -23,3 +24,10 @@ class InvoiceRecordAdmin(admin.ModelAdmin):
     search_fields = ('invoice_id',)
     readonly_fields = ('created_at',)
     ordering = ('-created_at',)
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('title', 'client_name', 'category', 'featured', 'created_at')
+    search_fields = ('title', 'client_name', 'category', 'tags')
+    prepopulated_fields = {'slug': ('title',)}
+    readonly_fields = ('created_at',)

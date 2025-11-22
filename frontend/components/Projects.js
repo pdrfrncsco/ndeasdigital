@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 function ProjectCard({ img, title, category, description, tags }) {
   return (
@@ -23,7 +24,7 @@ function ProjectCard({ img, title, category, description, tags }) {
 }
 
 export default function Projects() {
-  const projects = [
+  const fallbackProjects = [
     {
       img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
       title: 'Loja Virtual ModaAngola',
@@ -46,6 +47,29 @@ export default function Projects() {
       tags: ['Laravel', 'MySQL', 'Vue.js']
     }
   ]
+  const [projects, setProjects] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const rawBase = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000'
+    const apiBase = rawBase.replace(/\/$/, '')
+    fetch(`${apiBase}/api/projects/`)
+      .then((r) => {
+        if (!r.ok) throw new Error('fetch error')
+        return r.json()
+      })
+      .then((data) => {
+        if (data && data.projects && data.projects.length) {
+          setProjects(data.projects)
+        } else {
+          setProjects(fallbackProjects)
+        }
+      })
+      .catch(() => {
+        setProjects(fallbackProjects)
+      })
+      .finally(() => setLoading(false))
+  }, [])
 
   return (
     <section id="projects" className="py-16 bg-white">
@@ -57,9 +81,23 @@ export default function Projects() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((p) => (
-            <ProjectCard key={p.title} {...p} />
-          ))}
+          {(loading ? fallbackProjects : projects).map((p) => {
+            const slug = p.slug
+            const key = p.slug || p.title
+            const card = <ProjectCard {...p} />
+            if (slug) {
+              return (
+                <Link key={key} href={`/projects/${slug}`}>
+                  {card}
+                </Link>
+              )
+            }
+            return (
+              <div key={key}>
+                {card}
+              </div>
+            )
+          })}
         </div>
 
         <div className="text-center mt-12">

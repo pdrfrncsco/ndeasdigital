@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 
 
 class ContactMessage(models.Model):
@@ -28,8 +29,34 @@ class InvoiceRecord(models.Model):
     telemetry_path = models.CharField(max_length=1024, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
+class Project(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=220, unique=True, blank=True)
+    category = models.CharField(max_length=120, blank=True)
+    description = models.TextField(blank=True)
+    client_name = models.CharField(max_length=200, blank=True)
+    img = models.CharField(max_length=500, blank=True, help_text='Main image URL or path')
+    gallery = models.JSONField(blank=True, default=list, help_text='List of image URLs')
+    tags = models.JSONField(blank=True, default=list, help_text='List of tags')
+    link = models.URLField(blank=True)
+    featured = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-featured', '-created_at']
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base = slugify(self.title)[:200]
+            slug = base
+            i = 1
+            while Project.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base}-{i}"
+                i += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.invoice_id
+        if self.slug:
+            return f"{self.title} ({self.slug})"
+        return self.title
