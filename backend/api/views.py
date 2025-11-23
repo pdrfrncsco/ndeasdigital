@@ -15,6 +15,7 @@ import time
 import logging
 import traceback
 from datetime import datetime
+import uuid
 
 
 @api_view(['POST'])
@@ -105,8 +106,8 @@ def invoice_view(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     logger = logging.getLogger(__name__)
 
-    # Placeholder: generate invoice id and return it
-    invoice_id = 'INV' + str(os.getpid()) + str(len(request.data.get('items', [])))
+    # Geração robusta de ID único para fatura (evita colisões)
+    invoice_id = f"INV-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{uuid.uuid4().hex[:6].upper()}"
 
     # Normalize client/items if they arrived as JSON strings (multipart/form-data)
     raw_client = request.data.get('client')

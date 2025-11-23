@@ -105,6 +105,8 @@ body {
 @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
 #invoice-preview { background-color: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); }
+.invoice-a4 { width: 794px; max-width: 100%; margin-left: auto; margin-right: auto; }
+@media (max-width: 820px) { .invoice-a4 { width: 100%; } }
 
 /* small extra styles from original style.css */
 body { padding: 2rem; }
