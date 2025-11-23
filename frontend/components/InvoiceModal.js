@@ -1,6 +1,74 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 export default function InvoiceModal() {
+  useEffect(() => {
+    const closeById = (id) => {
+      const btn = document.getElementById(id)
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const modal = document.getElementById('invoice-modal')
+          if (modal) modal.classList.add('hidden')
+        })
+      }
+    }
+
+    closeById('close-invoice-modal')
+    closeById('close-invoice-btn')
+
+    const downloadBtn = document.getElementById('download-invoice-btn')
+    if (downloadBtn) {
+      downloadBtn.addEventListener('click', async () => {
+        const source = document.getElementById('invoice-preview')
+        if (!source) return
+        const hc = window.html2canvas
+        const JSPDF = window.jspdf && window.jspdf.jsPDF
+        if (!hc || !JSPDF) return
+
+        const container = document.createElement('div')
+        container.style.position = 'fixed'
+        container.style.left = '-10000px'
+        container.style.top = '0'
+        container.style.width = '794px'
+        container.style.background = '#ffffff'
+        container.style.zIndex = '-1'
+
+        const clone = source.cloneNode(true)
+        clone.classList.add('invoice-a4')
+        clone.style.width = '794px'
+        clone.style.maxHeight = 'none'
+        clone.style.overflow = 'visible'
+        container.appendChild(clone)
+        document.body.appendChild(container)
+
+        try {
+          const canvas = await hc(clone, { scale: 2, useCORS: true, scrollX: 0, scrollY: 0, backgroundColor: '#ffffff', width: 794, windowWidth: 794 })
+          const imgData = canvas.toDataURL('image/png')
+          const doc = new JSPDF('p', 'mm', 'a4')
+          const pageWidth = doc.internal.pageSize.getWidth()
+          const pageHeight = doc.internal.pageSize.getHeight()
+          const imgWidth = pageWidth
+          const imgHeight = canvas.height * imgWidth / canvas.width
+
+          let heightLeft = imgHeight
+          let position = 0
+          doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
+          heightLeft -= pageHeight
+          while (heightLeft > 1) {
+            doc.addPage()
+            position = -(imgHeight - heightLeft)
+            doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
+            heightLeft -= pageHeight
+          }
+
+          const number = document.getElementById('invoice-number')?.innerText || 'fatura'
+          doc.save(`${number}.pdf`)
+        } finally {
+          document.body.removeChild(container)
+        }
+      })
+    }
+  }, [])
+
   return (
     <div id="invoice-modal" className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
       <div className="bg-white rounded-lg w-full max-w-4xl max-h-screen overflow-auto">
@@ -17,11 +85,11 @@ export default function InvoiceModal() {
             </div>
           </div>
 
-          <div id="invoice-preview" className="p-8 mb-6">
+          <div id="invoice-preview" className="p-8 mb-6 invoice-a4">
             <div className="flex justify-between mb-12">
               <div>
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">NDEAS DIGITAL - Soluções Digitais</h1>
-                <p className="text-gray-600">Municipio do Sequele</p>
+                <p className="text-gray-600">Sequele</p>
                 <p className="text-gray-600">Icolo e Bengo, Angola</p>
                 <p className="text-gray-600">NIF: 003210480UE036</p>
               </div>
