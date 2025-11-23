@@ -88,7 +88,8 @@ export default function InvoiceModal() {
           <div id="invoice-preview" className="p-8 mb-6 invoice-a4">
             <div className="flex justify-between mb-12">
               <div>
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">NDEAS DIGITAL - Soluções Digitais</h1>
+                <img src="/ndeiasdigital_logo.png" alt="NDEAS DIGITAL" className="w-50 h-20 object-contain mb-2" />
+                {/*<h1 className="text-2xl font-bold text-gray-800 mb-2">NDEAS DIGITAL - Soluções Digitais</h1>*/}
                 <p className="text-gray-600">Sequele</p>
                 <p className="text-gray-600">Icolo e Bengo, Angola</p>
                 <p className="text-gray-600">NIF: 003210480UE036</p>
