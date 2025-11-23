@@ -10,6 +10,7 @@ export default function ProjectDetail() {
   const { slug } = router.query
   const [project, setProject] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [lightbox, setLightbox] = useState({ open: false, src: '', alt: '' })
 
   const makeApiUrl = (p) => {
     const base = process.env.NEXT_PUBLIC_API_BASE
@@ -32,6 +33,14 @@ export default function ProjectDetail() {
       .catch(() => setProject(null))
       .finally(() => setLoading(false))
   }, [slug])
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') setLightbox({ open: false, src: '', alt: '' })
+    }
+    if (lightbox.open) window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [lightbox.open])
 
   if (loading)
     return (
@@ -96,9 +105,15 @@ export default function ProjectDetail() {
                   <h3 className="text-xl font-semibold mb-3">Galeria</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {project.gallery.map((g, idx) => (
-                      <div key={idx} className="w-full h-40 relative overflow-hidden rounded">
+                      <button
+                        key={idx}
+                        type="button"
+                        aria-label="Ver imagem"
+                        onClick={() => setLightbox({ open: true, src: g, alt: `${project.title} ${idx + 1}` })}
+                        className="w-full h-40 relative overflow-hidden rounded cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      >
                         <Image src={g} alt={`${project.title} ${idx + 1}`} layout="fill" objectFit="cover" unoptimized />
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -136,6 +151,24 @@ export default function ProjectDetail() {
           </div>
         </div>
       </section>
+      {lightbox.open && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          onClick={(e) => { if (e.target === e.currentTarget) setLightbox({ open: false, src: '', alt: '' }) }}
+        >
+          <div className="relative max-w-5xl max-h-[85vh] mx-4">
+            <button
+              type="button"
+              aria-label="Fechar"
+              onClick={() => setLightbox({ open: false, src: '', alt: '' })}
+              className="absolute -top-10 right-0 bg-white text-gray-800 px-3 py-1 rounded shadow hover:bg-gray-100"
+            >
+              Fechar
+            </button>
+            <img src={lightbox.src} alt={lightbox.alt} className="max-h-[85vh] max-w-[90vw] object-contain rounded" />
+          </div>
+        </div>
+      )}
       <Footer />
     </>
   )
