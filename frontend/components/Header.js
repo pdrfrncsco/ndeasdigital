@@ -9,9 +9,9 @@ export default function Header() {
         Site em processo de desenvolvimento. Preços, apenas demonstrativos
       </div>
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <div className="flex items-center">
+        <a href="/" className="flex items-center">
           <img src="/ndeiasdigital_logo.png" alt="NDEAS DIGITAL" className="w-30 h-12 object-contain mr-3" />
-        </div>
+        </a>
 
         <nav className="hidden md:flex space-x-8">
           <a href="#home" className="nav-link text-gray-600 hover:text-orange-500">Início</a>
