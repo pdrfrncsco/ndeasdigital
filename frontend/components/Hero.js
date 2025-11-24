@@ -8,7 +8,7 @@ export default function Hero() {
     <section id="home" className="gradient-bg hero-pattern text-white py-20">
       <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0">
-          <h1 className="hero-title md:text-5xl font-bold mb-4">Soluções Digitais para o Futuro de Angola</h1>
+          <h1 className="hero-title md:text-5xl font-bold mb-4">Soluções Digitais que aceleram o seu negócio</h1>
           <p className="hero-subtitle mb-8">Desenvolvemos sistemas personalizados que impulsionam o seu negócio na era digital.</p>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
             <a href="#simulator" className="btn-primary text-center">Simular Orçamento</a>

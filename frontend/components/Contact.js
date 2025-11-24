@@ -103,7 +103,7 @@ export default function Contact() {
                 <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 mr-4 mt-1"><i className="fas fa-map-marker-alt"></i></div>
                 <div>
                   <h4 className="font-medium text-gray-800">Endereço</h4>
-                  <p className="text-gray-600">Municipio do Sequele, Icolo e Bengo, Angola</p>
+                  <p className="text-gray-600">Sequele, Icolo e Bengo, Angola</p>
                 </div>
               </div>
 
@@ -111,7 +111,7 @@ export default function Contact() {
                 <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 mr-4 mt-1"><i className="fas fa-phone-alt"></i></div>
                 <div>
                   <h4 className="font-medium text-gray-800">Telefone</h4>
-                  <p className="text-gray-600">+244 955 583 204</p>
+                  <p className="text-gray-600">+244 955 583 402</p>
                   <p className="text-gray-600">+244 945 149 978</p>
                 </div>
               </div>
@@ -124,7 +124,7 @@ export default function Contact() {
                   <p className="text-gray-600">suporte@ndeas.cloud</p>
                 </div>
               </div>
-
+            {/*
               <div className="flex items-start">
                 <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 mr-4 mt-1"><i className="fas fa-clock"></i></div>
                 <div>
@@ -132,16 +132,15 @@ export default function Contact() {
                   <p className="text-gray-600">Segunda a Sexta: 8h00 - 18h00</p>
                   <p className="text-gray-600">Sábado: 9h00 - 13h00</p>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <h3 className="text-xl font-semibold mb-6 text-gray-800">Siga-nos</h3>
             <div className="flex space-x-4">
               <a href="#" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-facebook-f"></i></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-twitter"></i></a>
               <a href="#" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-linkedin-in"></i></a>
               <a href="#" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-instagram"></i></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-youtube"></i></a>
+              <a href="https://github.com/pdrfrncsco/ndeasdigital" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-github"></i></a>
             </div>
           </div>
         </div>
