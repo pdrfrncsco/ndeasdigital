@@ -24,7 +24,7 @@ export default function Services() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <ServiceCard icon="fas fa-globe" title="Desenvolvimento Web" price="A partir de 150.000 Kz">
-            Sites institucionais responsivos, blogs e landing pages otimizadas para conversão e performance.
+            Sites institucionais responsivos, blogs e landing pages optimizadas para conversão e performance.
           </ServiceCard>
 
           <ServiceCard icon="fas fa-shopping-cart" title="eCommerce & Web Apps" price="A partir de 350.000 Kz">
@@ -35,12 +35,12 @@ export default function Services() {
             Registo de domínios .ao e hospedagem de alta performance.
           </ServiceCard>
 
-          <ServiceCard icon="fas fa-mobile-alt" title="Aplicativos Móveis" price="A partir de 500.000 Kz">
-            Aplicativos nativos para Android e iOS ou soluções híbridas multiplataforma.
+          <ServiceCard icon="fas fa-mobile-alt" title="Aplicativos Web e Mobile" price="A partir de 500.000 Kz">
+            Aplicativos Webs e nativos para Android e iOS ou soluções híbridas multiplataforma.
           </ServiceCard>
 
           <ServiceCard icon="fas fa-chart-line" title="Sistemas Personalizados" price="Sob consulta">
-            Soluções sob medida para gestão escolar, clínicas, ERP, CRM e outros sistemas empresariais.
+            Soluções sob medida para gestão escolar, clínicas, salões e barbearias e outros sistemas empresariais.
           </ServiceCard>
 
           <ServiceCard icon="fas fa-headset" title="Suporte & Manutenção" price="A partir de 50.000 Kz/mês">
