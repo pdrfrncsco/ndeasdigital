@@ -14,28 +14,32 @@ export default function Contact() {
         <div className="grid md:grid-cols-2 gap-12">
           <div className="bg-gray-50 p-8 rounded-xl shadow-sm">
             <h3 className="text-xl font-semibold mb-6 text-gray-800">Envie-nos uma Mensagem</h3>
-            <form id="contact-form" onSubmit={async (e) => {
-                e.preventDefault();
-                const form = e.target;
-                const formData = new FormData(form);
-                const payload = {
-                  name: formData.get('contact-name') || '',
-                  email: formData.get('contact-email') || '',
-                  phone: formData.get('contact-phone') || '',
-                  subject: formData.get('contact-subject') || '',
-                  message: formData.get('contact-message') || '',
-                  newsletter: formData.get('contact-newsletter') === 'on'
-                };
+        <form id="contact-form" onSubmit={async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            const makeApiUrl = (p) => {
+              const base = process.env.NEXT_PUBLIC_API_BASE
+              const b = (base && base.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
+              const sep = b ? (/(\/api)$/.test(b) ? '' : '/api') : ''
+              return `${b}${sep}${p}`
+            }
+            const payload = {
+              name: formData.get('contact-name') || '',
+              email: formData.get('contact-email') || '',
+              phone: formData.get('contact-phone') || '',
+              subject: formData.get('contact-subject') || '',
+              message: formData.get('contact-message') || ''
+            };
 
-                setStatus({ type: 'loading', message: 'Enviando...' });
-                const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://127.0.0.1:8000';
+            setStatus({ type: 'loading', message: 'Enviando...' });
 
                 try {
-                  const res = await fetch(`${API_BASE}/api/contact/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                  });
+              const res = await fetch(makeApiUrl('/contact/'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+              });
 
                   if (!res.ok) {
                     const err = await res.text();
@@ -67,7 +71,7 @@ export default function Contact() {
               <div className="mb-6">
                 <label htmlFor="contact-subject" className="block text-sm font-medium text-gray-700 mb-1">Assunto*</label>
                 <select id="contact-subject" name="contact-subject" required className="w-full px-4 py-2 rounded-lg input-field">
-                  <option value="" disabled defaultValue>Selecione um assunto</option>
+                  <option value="" disabled defaultValue>Seleccione um assunto</option>
                   <option value="orcamento">Solicitar Orçamento</option>
                   <option value="suporte">Suporte Técnico</option>
                   <option value="parceria">Parcerias</option>
