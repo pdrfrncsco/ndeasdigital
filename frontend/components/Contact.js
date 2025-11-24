@@ -142,7 +142,7 @@ export default function Contact() {
             <h3 className="text-xl font-semibold mb-6 text-gray-800">Siga-nos</h3>
             <div className="flex space-x-4">
               <a href="#" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-facebook-f"></i></a>
-              <a href="#" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-linkedin-in"></i></a>
+              <a href="www.linkedin.com/in/pedrofrancsico" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-linkedin-in"></i></a>
               <a href="#" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-instagram"></i></a>
               <a href="https://github.com/pdrfrncsco/ndeasdigital" className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500 hover:bg-orange-500 hover:text-white transition duration-300"><i className="fab fa-github"></i></a>
             </div>

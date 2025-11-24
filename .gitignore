@@ -18,6 +18,8 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
+media/
+/media/projects
 # Virtual environments
 venv/
 ENV/
