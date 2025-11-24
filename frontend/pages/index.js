@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Header from '../components/Header'
 import Hero from '../components/Hero'
 import Services from '../components/Services'
+import TechStack from '../components/TechStack'
 import Simulator from '../components/Simulator'
 import Footer from '../components/Footer'
 import Projects from '../components/Projects'
@@ -49,6 +50,7 @@ export default function Home() {
 
         <Services />
         <Projects />
+        <TechStack />
         <Simulator />
         <Contact />
       </main>
