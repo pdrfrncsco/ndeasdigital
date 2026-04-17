@@ -27,6 +27,9 @@ env/
 .venv/
 backend/venv/
 var/venv/
+staticfiles/
+static/
+
 # Django
 db.sqlite3
 /media/
