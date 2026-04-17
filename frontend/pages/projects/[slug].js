@@ -15,7 +15,8 @@ export default function ProjectDetail() {
   const makeApiUrl = (p) => {
     const base = process.env.NEXT_PUBLIC_API_BASE
     const b = (base && base.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
-    const sep = b ? (/(\/api)$/.test(b) ? '' : '/api') : ''
+    // Sempre incluir /api quando b está vazio (produção sem API_BASE definido)
+    const sep = b ? (/(\/api)$/.test(b) ? '' : '/api') : '/api'
     return `${b}${sep}${p}`
   }
 
