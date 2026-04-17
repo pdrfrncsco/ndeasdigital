@@ -275,233 +275,321 @@ export default function Simulator() {
   }, [])
 
   return (
-    <section id="simulator" className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4">
+    <section id="simulator" className="py-24 bg-gray-50 relative">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-orange-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+        <div className="absolute top-40 -left-40 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">Simulador de Orçamento</h2>
-          <div className="w-24 h-1 bg-orange-500 mx-auto"></div>
-          <p className="text-gray-600 max-w-2xl mx-auto mt-4">Preencha os campos abaixo para simular o custo do seu projeto e receber uma fatura proforma por e-mail.</p>
+          <span className="text-[#f97316] font-bold tracking-wider uppercase text-sm mb-2 block">Seja Transparente</span>
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+            Simulador de <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f97316] to-[#ea580c]">Orçamento</span>
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Preencha os campos abaixo para simular instantaneamente o investimento necessário para o seu projeto e receba uma fatura proforma detalhada por e-mail.
+          </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 bg-white p-8 rounded-xl shadow-sm">
+        <div className="grid lg:grid-cols-3 gap-8 items-start">
+          {/* Formulário (2 Colunas) */}
+          <div className="lg:col-span-2 bg-white p-8 md:p-10 rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100">
             <form id="budget-form" onSubmit={handleCalculate}>
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Informações Básicas</h3>
+              
+              {/* Informações Básicas */}
+              <div className="mb-10">
+                <h3 className="text-xl font-bold mb-6 text-gray-900 flex items-center gap-3">
+                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-100 text-[#ea580c] text-sm"><i className="fa-solid fa-user"></i></span>
+                  Informações Básicas
+                </h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Nome Completo*</label>
-                    <input type="text" id="name" name="name" required className="w-full px-4 py-2 rounded-lg input-field" />
+                    <label htmlFor="name" className="block text-sm font-bold text-gray-700 mb-2">Nome Completo <span className="text-[#ea580c]">*</span></label>
+                    <input type="text" id="name" name="name" required className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#f97316] focus:ring-2 focus:ring-[#f97316]/20 transition-all duration-200 outline-none" placeholder="João Silva" />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">E-mail*</label>
-                    <input type="email" id="email" name="email" required className="w-full px-4 py-2 rounded-lg input-field" />
+                    <label htmlFor="email" className="block text-sm font-bold text-gray-700 mb-2">E-mail <span className="text-[#ea580c]">*</span></label>
+                    <input type="email" id="email" name="email" required className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#f97316] focus:ring-2 focus:ring-[#f97316]/20 transition-all duration-200 outline-none" placeholder="joao@exemplo.com" />
                   </div>
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Telefone*</label>
-                    <input type="tel" id="phone" name="phone" required className="w-full px-4 py-2 rounded-lg input-field" />
+                    <label htmlFor="phone" className="block text-sm font-bold text-gray-700 mb-2">Telefone <span className="text-[#ea580c]">*</span></label>
+                    <input type="tel" id="phone" name="phone" required className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#f97316] focus:ring-2 focus:ring-[#f97316]/20 transition-all duration-200 outline-none" placeholder="+244 9XX XXX XXX" />
                   </div>
                   <div>
-                    <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">Empresa (opcional)</label>
-                    <input type="text" id="company" name="company" className="w-full px-4 py-2 rounded-lg input-field" />
+                    <label htmlFor="company" className="block text-sm font-bold text-gray-700 mb-2">Empresa <span className="text-gray-400 font-normal">(opcional)</span></label>
+                    <input type="text" id="company" name="company" className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#f97316] focus:ring-2 focus:ring-[#f97316]/20 transition-all duration-200 outline-none" placeholder="Nome da Empresa" />
                   </div>
                 </div>
               </div>
 
-              {/* rest of inputs (radios, checkboxes, selects) remain non-controlled to keep markup simple */}
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Tipo de Sistema</h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Tipo de Sistema */}
+              <div className="mb-10">
+                <h3 className="text-xl font-bold mb-6 text-gray-900 flex items-center gap-3">
+                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-100 text-[#ea580c] text-sm"><i className="fa-solid fa-laptop-code"></i></span>
+                  Tipo de Sistema
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {[
+                    { id: 'institutional', label: 'Site Institucional', icon: 'fa-globe' },
+                    { id: 'ecommerce', label: 'eCommerce', icon: 'fa-store' },
+                    { id: 'school', label: 'Sistema Escolar', icon: 'fa-graduation-cap' },
+                    { id: 'clinic', label: 'Sistema Clínica', icon: 'fa-notes-medical' },
+                    { id: 'saas', label: 'SaaS', icon: 'fa-cloud' },
+                    { id: 'custom', label: 'Personalizado', icon: 'fa-wand-magic-sparkles' }
+                  ].map((sys, idx) => (
+                    <div key={sys.id} className="relative">
+                      <input type="radio" id={`system-${sys.id}`} name="system_type" value={sys.id} className="peer sr-only" defaultChecked={idx === 0} />
+                      <label htmlFor={`system-${sys.id}`} className="flex flex-col items-center justify-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer transition-all duration-200 peer-checked:border-[#f97316] peer-checked:bg-orange-50 hover:bg-gray-50 group">
+                        <i className={`fa-solid ${sys.icon} text-2xl mb-2 text-gray-400 group-hover:text-gray-600 peer-checked:text-[#ea580c] transition-colors`}></i>
+                        <span className="text-sm font-semibold text-gray-700 peer-checked:text-gray-900 text-center">{sys.label}</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Plataformas */}
+              <div className="mb-10">
+                <h3 className="text-xl font-bold mb-6 text-gray-900 flex items-center gap-3">
+                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-100 text-[#ea580c] text-sm"><i className="fa-solid fa-mobile-screen-button"></i></span>
+                  Plataformas
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { id: 'web', label: 'Web', icon: 'fa-desktop' },
+                    { id: 'android', label: 'Android', icon: 'fa-android', isFab: true },
+                    { id: 'ios', label: 'iOS', icon: 'fa-apple', isFab: true },
+                    { id: 'all', label: 'Todas', icon: 'fa-layer-group' }
+                  ].map((plat, idx) => (
+                    <div key={plat.id} className="relative">
+                      <input type="checkbox" id={`platform-${plat.id}`} name={`platform_${plat.id}`} className="peer sr-only" defaultChecked={idx === 0} />
+                      <label htmlFor={`platform-${plat.id}`} className="flex items-center gap-3 p-4 border-2 border-gray-100 rounded-xl cursor-pointer transition-all duration-200 peer-checked:border-[#f97316] peer-checked:bg-orange-50 hover:bg-gray-50 group">
+                        <div className="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center peer-checked:bg-[#f97316] peer-checked:border-[#f97316] transition-colors">
+                          <i className="fa-solid fa-check text-white text-xs opacity-0 peer-checked:opacity-100 scale-50 peer-checked:scale-100 transition-all"></i>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <i className={`${plat.isFab ? 'fab' : 'fa-solid'} ${plat.icon} text-gray-400 group-hover:text-gray-600 peer-checked:text-[#ea580c] transition-colors`}></i>
+                          <span className="text-sm font-semibold text-gray-700 peer-checked:text-gray-900">{plat.label}</span>
+                        </div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recursos Adicionais */}
+              <div className="mb-10">
+                <h3 className="text-xl font-bold mb-6 text-gray-900 flex items-center gap-3">
+                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-100 text-[#ea580c] text-sm"><i className="fa-solid fa-puzzle-piece"></i></span>
+                  Recursos Adicionais
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {[
+                    { id: 'sms', label: 'SMS (Notificações)' },
+                    { id: 'push', label: 'Notificações Push' },
+                    { id: 'payment', label: 'Pagamentos Online' },
+                    { id: 'multilingual', label: 'Multi-idioma' },
+                    { id: 'analytics', label: 'Analytics' },
+                    { id: 'crm', label: 'CRM Integrado' }
+                  ].map((feat) => (
+                    <div key={feat.id} className="relative">
+                      <input type="checkbox" id={`feature-${feat.id}`} name={`feature_${feat.id}`} className="peer sr-only" />
+                      <label htmlFor={`feature-${feat.id}`} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer transition-all duration-200 peer-checked:border-[#f97316] peer-checked:bg-orange-50 hover:bg-gray-50">
+                        <div className="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center peer-checked:bg-[#f97316] peer-checked:border-[#f97316] transition-colors">
+                          <i className="fa-solid fa-check text-white text-xs opacity-0 peer-checked:opacity-100 scale-50 peer-checked:scale-100 transition-all"></i>
+                        </div>
+                        <span className="text-sm font-medium text-gray-700 peer-checked:text-gray-900">{feat.label}</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Serviços Adicionais & Suporte */}
+              <div className="mb-10">
+                <h3 className="text-xl font-bold mb-6 text-gray-900 flex items-center gap-3">
+                  <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-100 text-[#ea580c] text-sm"><i className="fa-solid fa-server"></i></span>
+                  Infraestrutura & Suporte
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
                   <div>
-                    <input type="radio" id="system-institutional" name="system_type" value="institutional" className="radio-custom" defaultChecked />
-                    <label htmlFor="system-institutional" className="ml-2 text-gray-700 cursor-pointer">Site Institucional</label>
+                    <label htmlFor="domain" className="block text-sm font-bold text-gray-700 mb-2">Domínio</label>
+                    <div className="relative">
+                      <select id="domain" name="domain" className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#f97316] focus:ring-2 focus:ring-[#f97316]/20 appearance-none transition-all duration-200 outline-none font-medium" defaultValue="none">
+                        <option value="none">Não preciso de domínio</option>
+                        <option value="ao">.ao (25.000 Kz/ano)</option>
+                        <option value="com">.com (35.000 Kz/ano)</option>
+                        <option value="org">.org (35.000 Kz/ano)</option>
+                        <option value="net">.net (35.000 Kz/ano)</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                        <i className="fa-solid fa-chevron-down text-xs"></i>
+                      </div>
+                    </div>
                   </div>
                   <div>
-                    <input type="radio" id="system-ecommerce" name="system_type" value="ecommerce" className="radio-custom" />
-                    <label htmlFor="system-ecommerce" className="ml-2 text-gray-700 cursor-pointer">eCommerce</label>
+                    <label htmlFor="hosting" className="block text-sm font-bold text-gray-700 mb-2">Hospedagem</label>
+                    <div className="relative">
+                      <select id="hosting" name="hosting" className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#f97316] focus:ring-2 focus:ring-[#f97316]/20 appearance-none transition-all duration-200 outline-none font-medium" defaultValue="none">
+                        <option value="none">Já tenho hospedagem</option>
+                        <option value="basic">Básica (50.000 Kz/ano)</option>
+                        <option value="professional">Profissional (100.000 Kz/ano)</option>
+                        <option value="premium">Premium (200.000 Kz/ano)</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-500">
+                        <i className="fa-solid fa-chevron-down text-xs"></i>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <input type="radio" id="system-school" name="system_type" value="school" className="radio-custom" />
-                    <label htmlFor="system-school" className="ml-2 text-gray-700 cursor-pointer">Sistema Escolar</label>
-                  </div>
-                  <div>
-                    <input type="radio" id="system-clinic" name="system_type" value="clinic" className="radio-custom" />
-                    <label htmlFor="system-clinic" className="ml-2 text-gray-700 cursor-pointer">Sistema Clínica</label>
-                  </div>
-                  <div>
-                    <input type="radio" id="system-saas" name="system_type" value="saas" className="radio-custom" />
-                    <label htmlFor="system-saas" className="ml-2 text-gray-700 cursor-pointer">SaaS</label>
-                  </div>
-                  <div>
-                    <input type="radio" id="system-custom" name="system_type" value="custom" className="radio-custom" />
-                    <label htmlFor="system-custom" className="ml-2 text-gray-700 cursor-pointer">Personalizado</label>
+                </div>
+                
+                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                  <div className="relative flex items-start">
+                    <div className="flex h-6 items-center">
+                      <input type="checkbox" id="support" name="support" className="peer sr-only" />
+                      <label htmlFor="support" className="w-5 h-5 rounded border-2 border-gray-300 flex items-center justify-center cursor-pointer peer-checked:bg-[#f97316] peer-checked:border-[#f97316] transition-colors bg-white">
+                        <i className="fa-solid fa-check text-white text-xs opacity-0 peer-checked:opacity-100 scale-50 peer-checked:scale-100 transition-all"></i>
+                      </label>
+                    </div>
+                    <div className="ml-3 text-sm leading-6">
+                      <label htmlFor="support" className="font-bold text-gray-900 cursor-pointer">Incluir Suporte Técnico Especializado</label>
+                      <p className="text-gray-500">6 meses de manutenção, correções e suporte prioritário (75.000 Kz).</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Plataformas</h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div>
-                    <input type="checkbox" id="platform-web" name="platform_web" className="checkbox-custom" defaultChecked />
-                    <label htmlFor="platform-web" className="ml-2 text-gray-700 cursor-pointer">Web</label>
-                  </div>
-                  <div>
-                    <input type="checkbox" id="platform-android" name="platform_android" className="checkbox-custom" />
-                    <label htmlFor="platform-android" className="ml-2 text-gray-700 cursor-pointer">Android</label>
-                  </div>
-                  <div>
-                    <input type="checkbox" id="platform-ios" name="platform_ios" className="checkbox-custom" />
-                    <label htmlFor="platform-ios" className="ml-2 text-gray-700 cursor-pointer">iOS</label>
-                  </div>
-                  <div>
-                    <input type="checkbox" id="platform-all" name="platform_all" className="checkbox-custom" />
-                    <label htmlFor="platform-all" className="ml-2 text-gray-700 cursor-pointer">Todas</label>
-                  </div>
-                </div>
+              {/* Observações */}
+              <div className="mb-10">
+                <label htmlFor="notes" className="block text-sm font-bold text-gray-700 mb-2">Observações <span className="text-gray-400 font-normal">(opcional)</span></label>
+                <textarea id="notes" name="notes" rows="3" className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-[#f97316] focus:ring-2 focus:ring-[#f97316]/20 transition-all duration-200 outline-none resize-none" placeholder="Descreva brevemente o seu projeto, necessidades específicas ou qualquer outra informação relevante..."></textarea>
               </div>
 
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Recursos Adicionais</h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div>
-                    <input type="checkbox" id="feature-sms" name="feature_sms" className="checkbox-custom" />
-                    <label htmlFor="feature-sms" className="ml-2 text-gray-700 cursor-pointer">SMS (Notificações)</label>
-                  </div>
-                  <div>
-                    <input type="checkbox" id="feature-push" name="feature_push" className="checkbox-custom" />
-                    <label htmlFor="feature-push" className="ml-2 text-gray-700 cursor-pointer">Notificações Push</label>
-                  </div>
-                  <div>
-                    <input type="checkbox" id="feature-payment" name="feature_payment" className="checkbox-custom" />
-                    <label htmlFor="feature-payment" className="ml-2 text-gray-700 cursor-pointer">Pagamentos Online</label>
-                  </div>
-                  <div>
-                    <input type="checkbox" id="feature-multilingual" name="feature_multilingual" className="checkbox-custom" />
-                    <label htmlFor="feature-multilingual" className="ml-2 text-gray-700 cursor-pointer">Multi-idioma</label>
-                  </div>
-                  <div>
-                    <input type="checkbox" id="feature-analytics" name="feature_analytics" className="checkbox-custom" />
-                    <label htmlFor="feature-analytics" className="ml-2 text-gray-700 cursor-pointer">Analytics</label>
-                  </div>
-                  <div>
-                    <input type="checkbox" id="feature-crm" name="feature_crm" className="checkbox-custom" />
-                    <label htmlFor="feature-crm" className="ml-2 text-gray-700 cursor-pointer">CRM Integrado</label>
-                  </div>
+              {/* Submit Area */}
+              <div className="pt-6 border-t border-gray-100 flex flex-col-reverse sm:flex-row justify-between items-center gap-4">
+                <div className="text-sm text-gray-500 flex items-center gap-2">
+                  <i className="fa-solid fa-lock text-gray-400"></i> Seus dados estão seguros
                 </div>
+                <button 
+                  type="submit" 
+                  id="calculate-btn" 
+                  className={`w-full sm:w-auto flex items-center justify-center gap-3 bg-[#f97316] text-white font-bold px-8 py-4 rounded-xl hover:bg-[#ea580c] transition-all duration-300 shadow-lg shadow-orange-500/30 hover:-translate-y-1 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <><i className="fa-solid fa-circle-notch fa-spin"></i> A calcular...</>
+                  ) : (
+                    <><i className="fa-solid fa-calculator"></i> Calcular Orçamento</>
+                  )}
+                </button>
               </div>
-
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Serviços Adicionais</h3>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="domain" className="block text-sm font-medium text-gray-700 mb-1">Domínio (.ao ou internacional)</label>
-                    <select id="domain" name="domain" className="w-full px-4 py-2 rounded-lg input-field" defaultValue="none">
-                      <option value="none">Não preciso de domínio</option>
-                      <option value="ao">.ao (25.000 Kz/ano)</option>
-                      <option value="com">.com (35.000 Kz/ano)</option>
-                      <option value="org">.org (35.000 Kz/ano)</option>
-                      <option value="net">.net (35.000 Kz/ano)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="hosting" className="block text-sm font-medium text-gray-700 mb-1">Hospedagem</label>
-                    <select id="hosting" name="hosting" className="w-full px-4 py-2 rounded-lg input-field" defaultValue="none">
-                      <option value="none">Já tenho hospedagem</option>
-                      <option value="basic">Básica (50.000 Kz/ano)</option>
-                      <option value="professional">Profissional (100.000 Kz/ano)</option>
-                      <option value="premium">Premium (200.000 Kz/ano)</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Suporte</h3>
-                <div className="flex items-center">
-                  <input type="checkbox" id="support" name="support" className="checkbox-custom" />
-                  <label htmlFor="support" className="ml-2 text-gray-700 cursor-pointer">Incluir suporte por 6 meses (75.000 Kz)</label>
-                </div>
-              </div>
-
-              <div className="mb-8">
-                <h3 className="text-xl font-semibold mb-4 text-gray-800 border-b pb-2">Observações</h3>
-                <textarea id="notes" name="notes" rows="4" className="w-full px-4 py-2 rounded-lg input-field" placeholder="Descreva brevemente o seu projeto, necessidades específicas ou qualquer outra informação relevante..."></textarea>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-between items-center">
-                <div className="mb-4 sm:mb-0">
-                  <button type="submit" id="calculate-btn" className="bg-orange-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-orange-600 transition duration-300" disabled={loading}>{loading ? 'A calcular...' : 'Calcular Orçamento'}</button>
-                </div>
-                <div className="text-center sm:text-right">
-                  <div className="text-gray-500 text-sm">* Campos obrigatórios</div>
-                </div>
-              </div>
-            </form>
-            {message && <div className="mt-4 text-sm text-red-600">{message}</div>}
-          </div>
-
-          <div className="md:col-span-1">
-            <div className="bg-white p-8 rounded-xl shadow-sm sticky top-8">
-              <h3 className="text-xl font-semibold mb-6 text-gray-800 border-b pb-2">Resumo do Orçamento</h3>
-
-              {!result && (
-                <div id="budget-summary" className="mb-8">
-                  <div className="text-center py-10">
-                    <i className="fas fa-calculator text-4xl text-gray-300 mb-4"></i>
-                    <p className="text-gray-500">Preencha o formulário ao lado para calcular o orçamento do seu projeto.</p>
-                  </div>
+              
+              {message && (
+                <div className={`mt-6 p-4 rounded-lg text-sm font-medium flex items-start gap-3 ${message.includes('Erro') ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-green-50 text-green-700 border border-green-100'}`}>
+                  <i className={`fa-solid mt-0.5 ${message.includes('Erro') ? 'fa-circle-exclamation' : 'fa-circle-check'}`}></i>
+                  <span>{message}</span>
                 </div>
               )}
+            </form>
+          </div>
 
-              {result && (
-                <div id="budget-results" className="mb-4">
-                  <div className="mb-6">
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-600">Desenvolvimento:</span>
-                      <span className="font-medium">{result.development} Kz</span>
+          {/* Sidebar / Resumo */}
+          <div className="lg:col-span-1">
+            <div className="bg-gray-900 text-white p-8 rounded-2xl shadow-xl shadow-gray-900/20 sticky top-32 overflow-hidden relative">
+              {/* Background Decor Sidebar */}
+              <div className="absolute -top-24 -right-24 w-48 h-48 bg-white opacity-5 rounded-full blur-2xl"></div>
+              <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-[#f97316] opacity-10 rounded-full blur-2xl"></div>
+              
+              <h3 className="text-xl font-bold mb-6 flex items-center gap-3 pb-4 border-b border-gray-800 relative z-10">
+                <i className="fa-solid fa-receipt text-[#f97316]"></i> Resumo do Investimento
+              </h3>
+
+              {!result ? (
+                <div id="budget-summary" className="text-center py-12 relative z-10">
+                  <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                    <i className="fa-solid fa-file-invoice-dollar text-3xl text-gray-500"></i>
+                  </div>
+                  <h4 className="text-lg font-bold text-gray-300 mb-2">Nenhuma simulação</h4>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    Preencha o formulário ao lado e clique em calcular para ver o detalhamento dos custos do seu projeto.
+                  </p>
+                </div>
+              ) : (
+                <div id="budget-results" className="relative z-10 animate-[fadeIn_0.5s_ease-out]">
+                  <div className="space-y-4 mb-8">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-code w-4"></i> Desenvolvimento</span>
+                      <span className="font-bold text-white">{result.development} Kz</span>
                     </div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-600">Domínio:</span>
-                      <span className="font-medium">{result.domain} Kz</span>
+                    {result.domain && result.domain !== '0' && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-globe w-4"></i> Domínio</span>
+                        <span className="font-bold text-white">{result.domain} Kz</span>
+                      </div>
+                    )}
+                    {result.hosting && result.hosting !== '0' && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-server w-4"></i> Hospedagem</span>
+                        <span className="font-bold text-white">{result.hosting} Kz</span>
+                      </div>
+                    )}
+                    {result.support && result.support !== '0' && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-headset w-4"></i> Suporte</span>
+                        <span className="font-bold text-white">{result.support} Kz</span>
+                      </div>
+                    )}
+                    {result.features && result.features !== '0' && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-puzzle-piece w-4"></i> Recursos extras</span>
+                        <span className="font-bold text-white">{result.features} Kz</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="border-t border-b border-gray-800 py-5 mb-8">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-gray-300 font-medium">Subtotal</span>
+                      <span className="font-bold">{result.subtotal} Kz</span>
                     </div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-600">Hospedagem:</span>
-                      <span className="font-medium">{result.hosting} Kz</span>
-                    </div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-600">Suporte:</span>
-                      <span className="font-medium">{result.support} Kz</span>
-                    </div>
-                    <div className="flex justify-between mb-2">
-                      <span className="text-gray-600">Recursos extras:</span>
-                      <span className="font-medium">{result.features} Kz</span>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-500">IVA (14%)</span>
+                      <span className="text-gray-400">{result.iva} Kz</span>
                     </div>
                   </div>
 
-                  <div className="border-t border-b border-gray-200 py-4 mb-6">
-                    <div className="flex justify-between">
-                      <span className="font-semibold">Subtotal:</span>
-                      <span className="font-semibold">{result.subtotal} Kz</span>
+                  <div className="mb-8">
+                    <div className="text-xs text-gray-500 uppercase tracking-wider font-bold mb-1">Investimento Total</div>
+                    <div className="text-3xl font-extrabold text-[#f97316] break-words">{result.total} Kz</div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <button 
+                      onClick={handleGenerateInvoice} 
+                      id="generate-invoice-btn" 
+                      className="w-full flex items-center justify-center gap-2 bg-[#f97316] text-white font-bold px-4 py-3 rounded-xl hover:bg-[#ea580c] transition-colors"
+                    >
+                      <i className="fa-solid fa-file-pdf"></i> Gerar Fatura Proforma
+                    </button>
+                    <button 
+                      id="send-request-btn" 
+                      className="w-full flex items-center justify-center gap-2 bg-gray-800 text-white font-bold px-4 py-3 rounded-xl hover:bg-gray-700 border border-gray-700 transition-colors"
+                    >
+                      <i className="fa-solid fa-paper-plane"></i> Enviar Pedido à Equipa
+                    </button>
+                  </div>
+
+                  <div className="mt-6 pt-6 border-t border-gray-800 space-y-2">
+                    <div className="flex items-start gap-2 text-xs text-gray-500">
+                      <i className="fa-solid fa-clock mt-0.5"></i>
+                      <span>Este orçamento tem validade de 15 dias úteis.</span>
                     </div>
-                    <div className="flex justify-between text-sm text-gray-500 mt-1">
-                      <span>IVA (14%):</span>
-                      <span>{result.iva} Kz</span>
+                    <div className="flex items-start gap-2 text-xs text-gray-500">
+                      <i className="fa-solid fa-circle-info mt-0.5"></i>
+                      <span>Valores sujeitos a confirmação após análise técnica detalhada.</span>
                     </div>
-                  </div>
-
-                  <div className="flex justify-between items-center mb-6">
-                    <span className="text-lg font-bold">Total:</span>
-                    <span className="text-2xl font-bold text-orange-500">{result.total} Kz</span>
-                  </div>
-
-                  <div className="mb-6">
-                    <button onClick={handleGenerateInvoice} id="generate-invoice-btn" className="w-full bg-orange-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-orange-600 transition duration-300 mb-3">Gerar Fatura Proforma</button>
-                    <button id="send-request-btn" className="w-full border border-orange-500 text-orange-500 font-semibold px-6 py-3 rounded-lg hover:bg-orange-500 hover:text-white transition duration-300">Enviar Pedido</button>
-                  </div>
-
-                  <div className="text-xs text-gray-500">
-                    <p>* Este orçamento tem validade de 15 dias.</p>
-                    <p>* Valores sujeitos a confirmação após análise detalhada.</p>
                   </div>
                 </div>
               )}
