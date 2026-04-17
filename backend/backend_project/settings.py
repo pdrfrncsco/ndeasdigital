@@ -8,7 +8,13 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET', 'change-me-for-production')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "api-ndeas.ndeas.cloud",
+    "ndeas.cloud",
+    "localhost",
+    "127.0.0.1"
+]
+
 
 # Application definition
 INSTALLED_APPS = [
