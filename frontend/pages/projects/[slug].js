@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
+import { apiFetch } from '../../lib/api'
 
 export default function ProjectDetail() {
   const router = useRouter()
@@ -12,22 +13,9 @@ export default function ProjectDetail() {
   const [loading, setLoading] = useState(true)
   const [lightbox, setLightbox] = useState({ open: false, src: '', alt: '' })
 
-  const makeApiUrl = (p) => {
-    const base = process.env.NEXT_PUBLIC_API_BASE
-    const b = (base && base.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
-    // Sempre incluir /api quando b está vazio (produção sem API_BASE definido)
-    const sep = b ? (/(\/api)$/.test(b) ? '' : '/api') : '/api'
-    return `${b}${sep}${p}`
-  }
-
   useEffect(() => {
     if (!slug) return
-    const url = makeApiUrl(`/projects/${slug}/`)
-    fetch(url)
-      .then((r) => {
-        if (!r.ok) throw new Error('not found')
-        return r.json()
-      })
+    apiFetch(`/projects/${slug}/`)
       .then((data) => {
         setProject(data.project)
       })

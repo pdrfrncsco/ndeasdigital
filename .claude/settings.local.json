@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python manage.py showmigrations)"
+      "Bash(python manage.py showmigrations)",
+      "Bash(python -c ' *)",
+      "Bash(curl -s http://127.0.0.1:8000/api/projects/)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('Image URL:', d['projects'][0]['img']\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://127.0.0.1:8000/media/projects/KUID_-_Endereco_Digital_1.png)"
     ]
   }
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { apiFetch } from '../lib/api'
 
 function ProjectCard({ img, title, category, description, tags }) {
   return (
@@ -10,10 +11,10 @@ function ProjectCard({ img, title, category, description, tags }) {
             Ver detalhes <i className="fa-solid fa-arrow-right text-sm"></i>
           </span>
         </div>
-        <img 
-          src={img} 
-          alt={title} 
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+        <img
+          src={img}
+          alt={title}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute top-4 right-4 z-20">
           <span className="bg-white/90 backdrop-blur-sm text-[#ea580c] font-bold text-xs px-3 py-1.5 rounded-full shadow-sm">
@@ -37,13 +38,6 @@ function ProjectCard({ img, title, category, description, tags }) {
 }
 
 export default function Projects() {
-  const makeApiUrl = (p) => {
-    const base = process.env.NEXT_PUBLIC_API_BASE
-    const b = (base && base.replace(/\/$/, '')) || (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
-    // Sempre incluir /api quando b está vazio (produção sem API_BASE definido)
-    const sep = b ? (/(\/api)$/.test(b) ? '' : '/api') : '/api'
-    return `${b}${sep}${p}`
-  }
   const fallbackProjects = [
     {
       img: 'https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80',
@@ -77,15 +71,12 @@ export default function Projects() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const url = makeApiUrl('/projects/')
-    fetch(url)
-      .then((r) => {
-        if (!r.ok) throw new Error('fetch error')
-        return r.json()
-      })
+    apiFetch('/projects/')
       .then((data) => {
-        if (data && data.projects && data.projects.length) {
-          setProjects(data.projects)
+        // Suporta diferentes formatos de resposta: { projects: [...] }, { results: [...] }, ou array direto
+        const list = data.projects || data.results || data
+        if (Array.isArray(list) && list.length) {
+          setProjects(list)
         } else {
           setProjects(fallbackProjects)
         }

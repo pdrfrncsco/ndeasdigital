@@ -77,3 +77,4 @@ reports/
 # Allow listing of example config files and docs
 !**/*.example
 !deploy/**
+.env.production.example
