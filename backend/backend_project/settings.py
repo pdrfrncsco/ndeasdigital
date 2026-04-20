@@ -83,12 +83,15 @@ STATICFILES_DIRS = [
 ]
 
 # CORS -- allow everything in dev
-CORS_ALLOW_ALL_ORIGINS = DEBUG
-# In production, set CORS_ALLOWED_ORIGINS env var to a comma-separated list
-if not DEBUG:
-    cors_raw = os.environ.get('CORS_ALLOWED_ORIGINS', '')
-    if cors_raw:
-        CORS_ALLOWED_ORIGINS = [e.strip() for e in cors_raw.split(',') if e.strip()]
+# For local development, always allow localhost:3000
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+elif os.environ.get('CORS_ALLOWED_ORIGINS'):
+    CORS_ALLOWED_ORIGINS.extend([e.strip() for e in os.environ.get('CORS_ALLOWED_ORIGINS').split(',') if e.strip()])
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

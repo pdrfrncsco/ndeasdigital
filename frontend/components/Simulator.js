@@ -43,15 +43,21 @@ export default function Simulator() {
         body: JSON.stringify(payload)
       })
 
+      console.log('Payload enviado:', payload)
+      console.log('URL:', makeApiUrl('/budget/'))
+
       if (!res.ok) {
         const err = await res.text()
+        console.error('Erro na resposta:', res.status, err)
         setMessage('Erro ao calcular orçamento: ' + err)
         setResult(null)
       } else {
         const data = await res.json()
+        console.log('Resposta recebida:', data)
         setResult(data)
       }
     } catch (err) {
+      console.error('Erro no catch:', err)
       setMessage('Erro: ' + err.message)
       setResult(null)
     } finally {
@@ -62,8 +68,14 @@ export default function Simulator() {
   const handleGenerateInvoice = async () => {
     if (!result) return
     try {
+      const form = document.getElementById('budget-form')
+      const formData = new FormData(form)
+
       const payload = {
-        client: { name: document.getElementById('name')?.value || '', email: document.getElementById('email')?.value || '' },
+        client: {
+          name: formData.get('name') || '',
+          email: formData.get('email') || ''
+        },
         items: [
           { description: 'Desenvolvimento', value: result.development },
           { description: 'Recursos extras', value: result.features },
@@ -88,20 +100,16 @@ export default function Simulator() {
         setText('invoice-number', data.invoice_id || '')
         setText('invoice-date', new Date().toLocaleDateString())
 
-        // Client info
-        const nameVal = document.getElementById('name')?.value || ''
-        const emailVal = document.getElementById('email')?.value || ''
-        const companyVal = document.getElementById('company')?.value || ''
-        const phoneVal = document.getElementById('phone')?.value || ''
-        setText('client-name', nameVal)
-        setText('client-email', emailVal)
-        setText('client-company', companyVal)
-        setText('client-phone', phoneVal)
+        // Client info (use cached form reference)
+        setText('client-name', formData.get('name') || '')
+        setText('client-email', formData.get('email') || '')
+        setText('client-company', formData.get('company') || '')
+        setText('client-phone', formData.get('phone') || '')
 
-        // Project details
-        const systemType = document.querySelector('input[name="system_type"]:checked')?.value || ''
-        const platforms = Array.from(document.querySelectorAll('input[id^="platform-"]:checked')).map(n => n.id.replace(/^platform-/, ''))
-        const features = Array.from(document.querySelectorAll('input[id^="feature-"]:checked')).map(n => n.id.replace(/^feature-/, ''))
+        // Project details (use form-scoped queries)
+        const systemType = form.querySelector('input[name="system_type"]:checked')?.value || ''
+        const platforms = gatherCheckboxesFromForm(form, 'platform-')
+        const features = gatherCheckboxesFromForm(form, 'feature-')
         setText('project-type', `Tipo: ${systemType ? systemType.charAt(0).toUpperCase() + systemType.slice(1) : '—'}`)
         setText('project-platforms', `Plataformas: ${platforms.length ? platforms.join(', ') : 'Nenhuma'}`)
         setText('project-features', `Recursos: ${features.length ? features.join(', ') : 'Nenhum'}`)
@@ -191,7 +199,10 @@ export default function Simulator() {
               const invoiceNumber = document.getElementById('invoice-number')?.innerText || 'invoice'
               const file = new File([blob], `${invoiceNumber}.pdf`, { type: 'application/pdf' })
 
-              const client = { name: document.getElementById('client-name')?.innerText || document.getElementById('name')?.value || '', email: document.getElementById('client-email')?.innerText || document.getElementById('email')?.value || '' }
+              // Use already cached form reference and FormData
+              const clientName = document.getElementById('client-name')?.innerText || formData.get('name') || ''
+              const clientEmail = document.getElementById('client-email')?.innerText || formData.get('email') || ''
+              const client = { name: clientName, email: clientEmail }
               const items = []
               // read rows from invoice-items
               const itemsTbodyLocal = document.getElementById('invoice-items')
@@ -210,7 +221,7 @@ export default function Simulator() {
               fd.append('client', JSON.stringify(client))
               fd.append('items', JSON.stringify(items))
 
-              const res = await fetch(`${API_BASE}/api/invoice/`, { method: 'POST', body: fd })
+              const res = await fetch(makeApiUrl('/invoice/'), { method: 'POST', body: fd })
               if (!res.ok) {
                 const err = await res.text()
                 throw new Error(err || 'Erro ao enviar fatura')
@@ -517,25 +528,31 @@ export default function Simulator() {
                       <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-code w-4"></i> Desenvolvimento</span>
                       <span className="font-bold text-white">{result.development} Kz</span>
                     </div>
-                    {result.domain && result.domain !== '0' && (
+                    {result.platforms_cost > 0 && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-mobile-screen w-4"></i> Plataformas</span>
+                        <span className="font-bold text-white">{result.platforms_cost} Kz</span>
+                      </div>
+                    )}
+                    {result.domain > 0 && (
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-globe w-4"></i> Domínio</span>
                         <span className="font-bold text-white">{result.domain} Kz</span>
                       </div>
                     )}
-                    {result.hosting && result.hosting !== '0' && (
+                    {result.hosting > 0 && (
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-server w-4"></i> Hospedagem</span>
                         <span className="font-bold text-white">{result.hosting} Kz</span>
                       </div>
                     )}
-                    {result.support && result.support !== '0' && (
+                    {result.support > 0 && (
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-headset w-4"></i> Suporte</span>
                         <span className="font-bold text-white">{result.support} Kz</span>
                       </div>
                     )}
-                    {result.features && result.features !== '0' && (
+                    {result.features > 0 && (
                       <div className="flex justify-between items-center text-sm">
                         <span className="text-gray-400 flex items-center gap-2"><i className="fa-solid fa-puzzle-piece w-4"></i> Recursos extras</span>
                         <span className="font-bold text-white">{result.features} Kz</span>
